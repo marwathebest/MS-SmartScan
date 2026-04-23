@@ -1,54 +1,35 @@
-# دليل تشغيل النظام على Raspberry Pi 5 🍓
+دليل تشغيل النظام على Raspberry Pi 5
+هذا الدليل مخصص لتشغيل المشروع في بيئته الأصلية، مع كافة الأوامر البرمجية اللازمة لإعداد النظام.
 
-هذا الدليل مخصص لتشغيل مشروع **MS SmartScan** على جهاز الرازبيري باي لضمان عمل الكاميرا ونموذج الذكاء الاصطناعي بكفاءة.
+أولاً: تحديث النظام وتثبيت السيرفر
+نسخ الكود وضعيه في الـ Terminal لتثبيت Apache و PHP وقاعدة البيانات:
 
-## 1. المتطلبات التقنية (Hardware Requirements)
-* جهاز Raspberry Pi 5.
-* كاميرا Raspberry Pi Module V2.
-* شاشة عرض (Display) متصلة عبر منفذ Micro-HDMI.
-* نظام تشغيل Raspberry Pi OS (64-bit).
+ ```bash
+sudo apt update && sudo apt upgrade -y && sudo apt install apache2 php libapache2-mod-php php-mysql mariadb-server -y
+ثانياً: تثبيت مكتبات الذكاء الاصطناعي
+هذا الأمر سيقوم بتثبيت YOLO11m والمكتبات المطلوبة لمعالجة الصور:
 
-## 2. إعداد الكاميرا والبيئة
-تأكد أولاً من تفعيل واجهة الكاميرا من خلال الإعدادات:
-```bash
-sudo raspi-config
-(انتقل إلى Interface Options ثم Camera وتأكد من تفعيلها).
-3. تثبيت المكتبات البرمجية
-افتح الـ Terminal وقم بتثبيت المكتبات التالية:
+ ```bash
+pip install ultralytics opencv-python pillow --break-system-packages
+ثالثاً: إعداد الملفات وصلاحيات النظام
+لكي يعمل النظام ويتمكن من التقاط الصور وحفظها، يجب تنفيذ هذه الأوامر بالترتيب:
 
-Bash
-# تحديث النظام
-sudo apt update && sudo apt upgrade -y
+نقل الملفات وإعطاء الصلاحيات:
 
-# تثبيت مكتبات الذكاء الاصطناعي ومعالجة الصور
-pip install ultralytics opencv-python --break-system-packages
-4. إعداد خادم الويب (Apache & PHP)
-قم بتنصيب خادم Apache و PHP إذا لم تكن مثبتة:
-
-Bash
-sudo apt install apache2 php libapache2-mod-php php-mysql -y
-انقل ملفات المشروع إلى المسار: /var/www/html/MS.smartScan/.
-
-مهم جداً: إعطاء صلاحيات الوصول للكاميرا والمجلدات:
-
-Bash
+ ```bash
 sudo chown -R www-data:www-data /var/www/html/MS.smartScan/
 sudo chmod -R 777 /var/www/html/MS.smartScan/uploads
-5. إعداد قاعدة البيانات (MariaDB)
-قم بإنشاء قاعدة البيانات عبر phpMyAdmin.
+السماح للسيرفر باستخدام الكاميرا:
 
-قم باستيراد ملف database.sql الموجود في المستودع.
+ ```bash
+sudo usermod -a -G video www-data
+رابعاً: تفعيل الكاميرا من الإعدادات
+نفذي هذا الأمر لفتح شاشة الإعدادات:
 
-تأكد من مطابقة بيانات الاتصال (المستخدم وكلمة المرور) في ملف db_config.php.
+ ```bash
+sudo raspi-config
+(اذهبي إلى Interface Options، ثم اختر Legacy Camera واجعليها Yes، ثم أعيدي تشغيل الجهاز).
 
-6. التشغيل النهائي
-افتح متصفح Chromium في وضع ملء الشاشة (Kiosk Mode) وتوجه للرابط:
+🚀 التشغيل النهائي:
+افتحي المتصفح داخل الرازبيري وتوجهي للرابط:
 http://localhost/MS.smartScan/index.php
-
-ملاحظة: تم تحسين الكود ليتوافق مع سرعة Raspberry Pi 5 واستخدام نظام المعالجة الجديد libcamera.
-
-
-### الخطوة 3: الحفظ
-اضغطي على **Commit changes**.
-
----
