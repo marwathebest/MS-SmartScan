@@ -19,8 +19,8 @@ pip install ultralytics opencv-python pillow --break-system-packages
 نقل الملفات وإعطاء الصلاحيات:
 
  ```bash
-sudo chown -R www-data:www-data /var/www/html/MS.smartScan/
-sudo chmod -R 777 /var/www/html/MS.smartScan/uploads
+sudo chown -R www-data:www-data /var/www/html
+sudo chmod -R 777 /var/www/html/uploads
  ```
 السماح للسيرفر باستخدام الكاميرا:
 
@@ -37,4 +37,4 @@ sudo raspi-config
 
 🚀 التشغيل النهائي:
 افتحي المتصفح داخل الرازبيري وتوجهي للرابط:
-http://localhost/MS.smartScan/index.php
+http://localhost/index.php
